@@ -29,10 +29,10 @@ Yuan-Source-Recorder是一个专业的OBS Studio录制插件，**支持双版本
 - ✅ **磁盘监控**：实时显示可用空间
 
 ### 项目规模
-- **代码总量**：约20,000行C++17代码
+- **代码总量**：约20,000行X2 C++17代码
 - **模块数量**：12个核心模块
 - **测试用例**：200+个
-- **文档数量**：20+份
+- **文档数量**：1+份
 - **支持版本**：OBS 29.0.0 - 32.0.1+
 
 ---
@@ -125,13 +125,14 @@ Yuan-Source-Recorder/
 **版本隔离机制**：
 ```cpp
 // 通过条件编译处理版本差异
-#if OBS_VERSION_MAJOR >= 32
-    // OBS 32+ 特定代码
-    obs_frontend_api_function();
+static inline config_t *getConfig()
+{
+#if LIBOBS_API_MAJOR_VER > 31
+	return obs_frontend_get_user_config();
 #else
-    // OBS 29-31 特定代码
-    obs_legacy_api_function();
+	return obs_frontend_get_profile_config();
 #endif
+}
 ```
 
 ### 1.2 源代码详细说明
@@ -1699,7 +1700,9 @@ OBS版本：32.0.1, 32.1.0
 4. ⚠️ 待优化：热更新源录制后，没有更新弹窗提醒
 5. ⚠️ 待优化：限制源录制单个配置文件和场景集合的最大录制数量不能超过4个
 6. ⚠️ 待优化：在29-31版本中源录制停靠栏（recording-control-dock）的UI没有边框，与背景融合
-
+7. ⚠️ 待优化: 设置中的取消和确定实际上都是确定
+8. ⚠️ 待优化：当下方没有提示语时放上去鼠标会显示上一次的提示
+9. ⚠️ 待优化：滤镜开启和关闭，源录制的预览会变明变暗（这个未能复现，疑似电脑环境原因，不知道具体原因）
 
 **测试结论**：
 - Yuan-Source-Recorder双版本插件功能完整、性能优秀、稳定可靠
